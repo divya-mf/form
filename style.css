@@ -1,0 +1,101 @@
+	body {
+	  font-family: 'Open Sans', sans-serif;
+	  font-size: 16px;
+	  color: #4c4c4c;
+	 
+	}
+
+	.container input[type=text], input[type=password], input[type=date], input[type=email]{
+	  width: 93%;
+	  padding: 15px;
+	  margin: 5px 0 15px 0;
+	  display: inline-block;
+	  border: none;
+	  background: #f1f1f1;
+	}
+
+	.nameDiv input[type=text]{
+	  width: 42%;
+	  padding: 16px;
+	  border: none;
+	  background: #f1f1f1;
+	}
+	.bloodGroup select{
+	  width: 70%;
+	  padding: 11px;
+	  margin-left:75px;
+	  border: none;
+	  background: #f1f1f1;
+	}
+	.container input[type=text]:focus, input[type=password]:focus , input[type=email]:focus {
+	  background-color: #ddd;
+	  border: "";  
+	}
+	hr {
+	  border: 1px solid #f1f1f1;
+	  margin-bottom: 15px;
+	}
+	button {
+	  background-color: #4CAF50;
+	  color: white;
+	  padding: 14px 20px;
+	  margin: 8px 0;
+	  border: none;
+	  cursor: pointer;
+	  width: 100%;
+	  opacity: 0.8;
+	}
+	button:hover {
+	  opacity:1;
+	}
+	.cancelbtn {
+	  padding: 14px 20px;
+	  background-color: #f44336;
+	}
+	.cancelbtn, .signupbtn {
+	  float: left;
+	  width: 50%;
+	}
+	form{
+	 animation-name: trial;
+	  animation-duration: 4s;
+	  }
+	  
+	@keyframes trial {
+		 45% {background-color: lightblue;}
+		  85% {background-color: #D3D3D3;} 
+	}
+	.container {
+	  padding: 16px;
+	  width: 450px;
+	  text-align:left;	  
+	}
+	.clearfix::after {
+	  content: "";
+	  clear: both;
+	  display: table;
+	}
+	.signin {
+		background-color: #f1f1f1;
+		text-align: center;
+		padding: 15px;
+	}
+
+	.radioSelect {
+	  padding: 16px 0px 16px 0px;
+	}
+	@media screen and (max-width: 600px) {
+	  .cancelbtn, .signupbtn,.nameDiv input[type=text] {
+		width: 100%;
+	  }
+	}
+	p, h1{
+	line-height:7px;
+	}
+	p{
+	font-size:13px;
+	}
+	#msg
+	{
+		color:red;
+	}
