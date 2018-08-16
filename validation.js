@@ -1,189 +1,257 @@
-    function validateForm() {
-		var fname = document.getElementById("fname").value;
-		var lname = document.getElementById("lname").value;
-		var success = document.getElementById("success");
-		var error= document.getElementById("msg");
-		error.innerHTML=" ";
-		var errorMsg=new Array(); 
+/**
+ * validates form fields
+ * 
+ * 
+ * @returns {boolean value}
+*/
+   function validateForm() {
+		var fName = $('#fname').val();
+		var lName = $('#lname').val();
+		var success =$('#success');
+		var error=0;
 		var l=0;
-			
-		if (fname == "") {
-			errorMsg[l++] ="Fill in your first name";
+		clearErrors();
+		if (fName == "") {
+			error=1;
+			$("#fError").html("Fill in your first name");
 		}
-		if (lname == "") {
-		   errorMsg[l++] ="Fill in your last name";
+		
+		if (lName == "") {
+		  
+		   $("#lError").html("Fill in your last name");
+		   if(error==1)
+		   {
+			  $("#lError").css("margin-left", "110px"); 
+		   }else{
+			   $("#lError").css("margin-left", "224px");
+		   }
+		    error=1;
 		}
-		if(fname != "" && lname != ""){
-			if( /^[a-zA-Z\s]+$/.test( fname ) == false || /^[a-zA-Z\s]+$/.test( lname ) == false ) {
-			   errorMsg[l++] ="Invalid name";
+		if(fName != "" && lName != ""){
+			if( /^[a-zA-Z\s]+$/.test( fName ) == false || /^[a-zA-Z\s]+$/.test( lName ) == false ) {
+			   error=1;
+			   $("#fError").html("Invalid first name");
+			   $("#fError").css("margin-left", "63px");
+			   $("#lError").html("Invalid last name");
+			   $("#lError").css("margin-left", "128px");
 			}
 		}
 		
-		var db = document.getElementById("db").value;
+		var db =$('#db').val();
 		if (db == "") {
-		   errorMsg[l++] ="Fill in your date of birth";
+		   error=1;
+		   $("#dbError").html("Fill in your date of birth");
 		}
-		var email = document.getElementById("email").value;
 		
+		var email = $('#email').val();
 		if (email == "") {
-			errorMsg[l++] ="Fill in your email";
+			error=1;
+			$("#mailError").html("Fill in your email");
 		}
 		var at = email.indexOf("@");
 		var dot = email.lastIndexOf(".");
-			 if(email != ""){
-				 if (at < 1 || ( dot - at < 2 ) ||/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)== false) 
-				 {
-					errorMsg[l++] = "Please enter a valid email ID";
+			if(email != ""){
+				if (at < 1 || ( dot - at < 2 ) ||/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)== false){
+					error=1;
+					$("#mailError").html("Please enter a valid email ID");
+					 $("#mailError").css("margin-left", "230px");
 				}
 			 }
-		 var table=document.getElementById("dataTable");
-		 var index = document.getElementById("editState").value;
-		for(var i=1;i<table.rows.length;i++)
-		{	if(i == index) continue;
-			
-			if(table.rows[i].cells[6].innerHTML == email)
-			{
-			errorMsg[l++] ="Email already exists";
-			}
-			
+		var table=$('#dataTable');
+		var index = $('#editState').val();
+		for(var i=1;i<table.find('tr').length;i++){
+			//to ignore the selected row while validating email during edit.
+			if(index!="" && i == index) continue;		
+			if($(table).find('tr:eq('+i+') td:eq(6)').text() == email){
+					error=1;
+					$("#mailError").html("Email already exists");
+					$("#mailError").css("margin-left", "275px");
+			}		
 		}
-
-		var pw = document.getElementById("pw").value;
-		var pw_c = document.getElementById("pw_confirm").value;
+		
+		var pw = $('#pw').val();
+		var pw_c = $('#pw_confirm').val();
 		if (pw != pw_c) {
-			errorMsg[l++] ="Password mismatch";
-			}
-		if (pw == "" ) {
-		   errorMsg[l++] ="Please set a password";
+			error=1;
+			$("#pwcError").html("Password mismatch");
 		}
-		if(errorMsg.length > 0){
-			document.body.scrollTop = document.documentElement.scrollTop = 0;
-			success.style.display = "none";
-			for(var i=0;i<=errorMsg.length-1;i++){
-			error.innerHTML+="<li>"+errorMsg[i]+"</li>"
-			}   
+		
+		if (pw == "" ) {
+		   error=1;
+		   $("#pwError").html("Please set a password");
+		}
+		if(error == 1){
+			success.hide();  
+			$(window).scrollTop(0);			
 			return false;
 		}
-		if(document.getElementById("editState").value != "")
+		if(index != "")
 		{
 			updateData();
 			return false;
 		}
-		showTableData(fname,lname,db,email,pw,pw_c);
+		showTableData(fName,lName,db,email,pw);
 		return false;
 
 	}
-
-	function showTableData(fname,lname,db,email,pw,pw_c){
-		document.getElementById("noData").style.display = "none";
-		var gender = document.querySelector('input[name="gender"]:checked');
-        gender = gender.value
-		var bGroup = document.getElementById("bGroup").value;
-		var data = document.getElementById("showData");
-		data.style.display = "block";
-		var table=document.getElementById("dataTable");
-		var index=table.rows.length;
-	 
-        var row=table.insertRow(-1);
-        var cell1=row.insertCell(0);
-        var cell2=row.insertCell(1);
-        var cell3=row.insertCell(2);
-		var cell4=row.insertCell(3);
-		var cell5=row.insertCell(4);
-		var cell6=row.insertCell(5);
-		var cell7=row.insertCell(6);
-		var cell8=row.insertCell(7);
-		var cell9=row.insertCell(8);
-        cell1.innerHTML=index;
-        cell2.innerHTML=fname
-		cell3.innerHTML=lname;   		
-		cell4.innerHTML=db;
-		cell5.innerHTML=gender;
-		cell6.innerHTML=bGroup;
-		cell7.innerHTML=email;
-		cell8.innerHTML=pw;	
-		cell9.innerHTML = "<button class=\"btn\"  title=\"Delete\" id=\"remove\" onclick=\"removeRow(this)\"><i class=\"fa fa-trash\"></i></button> <button class=\"btn \" title=\"Edit\" onclick=\"editRow(this)\"><i class=\"fa fa-edit\"></i> </button>";
-
-		clearForm();
-		document.body.scrollTop = document.body.scrollHeight;
-		document.documentElement.scrollTop = document.documentElement.scrollHeight;	
+	
+/**
+ * Displays the form data in a tabular structure
+ * 
+ * @param {string} first name
+ * @param {string} last name 
+ * @param {string} date of birth 
+ * @param {string} email
+ * @param {string} password
+*/
+	
+	function showTableData(fname,lname,db,email,pw){
+		$("#noData").hide();
+		var gender = $("input[name='gender']:checked").val();
+		var bGroup = $("#bGroup").val();
+		var data = $("#showData");
+		data.show();
+		var table=$("#dataTable");
+		var index=table.find('tr').length;
+		table.append("<tr><td>" +index+ "</td><td>"+ fname+ "</td><td>" +lname+ "</td><td>" +db+ "</td><td>" +gender+ "</td><td>" +bGroup+ "</td><td>" +email+ "</td><td>" +pw+ "</td><td> <button class='btn' title='Delete' id='remove' onclick=removeRow(this)><i class='fa fa-trash'></i></button> <button class=\"btn \" title='Edit' onclick=editRow(this)><i class='fa fa-edit'></i> </button> </td></tr>");
 		var msg ="Registered Successfully";
-		var success = document.getElementById("success");
-		success.style.display = "block";
-		success.innerHTML = msg;
+		var success = $("#success");
+		success.html(msg);
+		clearForm();
+		success.show();
+		$(window).scrollTop(1000);
 	}
-
+/**
+ * Removes the selected row of data
+ * 
+ * @param {string} row
+*/
 	function removeRow(row) {
-		  var row = row.parentNode.parentNode;
-		  row.parentNode.removeChild(row);
-		  var msg ="Deleted Successfully";
-		  var success = document.getElementById("success");
-		  success.style.display = "block";
-		  success.innerHTML = msg;
-		 
-		  if (document.getElementById("dataTable").rows.length == 1)
-		  {
-			  var info ="No Data Found";
-			  var noData = document.getElementById("noData");
-			  noData.style.display = "block";
-			  noData.innerHTML = info;
-			  
-		  }
-  
+		$(row).parents("tr").remove();
+		var msg ="Deleted Successfully";
+		var success = $("#success");
+		success.show();
+		success.html(msg);
+		clearErrors();
+		if ($("#dataTable").find('tr').length == 1)
+		{
+			var info ="No Data Found";
+			$("#noData").show();
+			$("#noData").html(info);		  
+		}
+		$(window).scrollTop(1000);
 	}
+/**
+ * Fills the form with the data of selected
+ * 
+ * @param {string} row
+*/
 	function editRow(index) {
-		document.body.scrollTop = document.documentElement.scrollTop = 0;
-		success.style.display = "none";
-		var row = index.parentNode.parentNode;
-
-		 document.getElementById("fname").value = row.cells[1].innerHTML;
-		 document.getElementById("lname").value =row.cells[2].innerHTML;
-		 document.getElementById("db").value = row.cells[3].innerHTML;
-		 if(row.cells[4].innerHTML == 'female')
-		 {
-			 document.getElementById('female').checked = true; 
-		 }
-		 else
-		 {
-			 document.getElementById('male').checked = true;
-		 }
-		document.getElementById("bGroup").value =row.cells[5].innerHTML;
-		document.getElementById("email").value = row.cells[6].innerHTML;
-		document.getElementById("pw").value = row.cells[7].innerHTML;
-		document.getElementById("pw_confirm").value = row.cells[7].innerHTML;
-		document.getElementById("submit").innerHTML = "Update";
-		document.getElementById("editState").value = row.cells[0].innerHTML;
+		$(window).scrollTop(0);
+		$("#success").hide();
+		clearErrors();
+		var row = $(index).parents("tr");
+		var cols = row.children("td");
+		$("#fname").val($(cols[1]).text());
+		$("#lname").val($(cols[2]).text());
+		$("#db").val($(cols[3]).text());
+		if($(cols[4]).text() == 'female')
+		{
+			$('#female').prop('checked', true); 
+		}
+		else
+		{
+			$('#male').prop('checked', true);
+		}
+		$("#bGroup").val($(cols[5]).text());
+		$("#email").val($(cols[6]).text());
+		$("#pw").val($(cols[7]).text());
+		$("#pw_confirm").val($(cols[7]).text());
+		$("#submit").html("Update");
+		$("#editState").val( $(cols[0]).text());
 		
 	}
-
+/**
+ * updates the values of the selected row in the table
+ * 
+*/
 	function updateData() {
-		var table=document.getElementById("dataTable");
-		var index = document.getElementById("editState").value;
-		var gender = document.querySelector('input[name="gender"]:checked');
-			gender = gender.value
-		table.rows[index].cells[1].innerHTML = document.getElementById("fname").value;
-		table.rows[index].cells[2].innerHTML = document.getElementById("lname").value;
-		table.rows[index].cells[3].innerHTML = document.getElementById("db").value;
-		table.rows[index].cells[4].innerHTML = gender
-		table.rows[index].cells[5].innerHTML = document.getElementById("bGroup").value;
-		table.rows[index].cells[6].innerHTML = document.getElementById("email").value;
-		table.rows[index].cells[7].innerHTML = document.getElementById("pw").value;
-		clearForm();
-		document.getElementById("submit").innerHTML = "Register";
+		var table=$("#dataTable");
+		var index = $("#editState").val();
+		var gender = $("input[name='gender']:checked").val();
+		$(table).find('tr:eq('+index+') td:eq(1)').html($("#fname").val()) ;
+		$(table).find('tr:eq('+index+') td:eq(2)').html($("#lname").val()) ;
+		$(table).find('tr:eq('+index+') td:eq(3)').html($("#db").val()) ;
+		$(table).find('tr:eq('+index+') td:eq(4)').html(gender) ;
+		$(table).find('tr:eq('+index+') td:eq(5)').html($("#bGroup").val());
+		$(table).find('tr:eq('+index+') td:eq(6)').html($("#email").val());
+		$(table).find('tr:eq('+index+') td:eq(7)').html($("#pw").val()) ;
 		window.scrollTo(0,document.body.scrollHeight);
 		var msg ="Updated Successfully";
-		var success = document.getElementById("success");
-		success.style.display = "block";
-		success.innerHTML = msg;
-		document.getElementById("editState").value="";
+		$("#success").show();
+		$("#success").html(msg);
+		clearForm();
+		$(window).scrollTop(1000);
 	}
-	function clearForm(){
-		document.getElementById("fname").value = "";
-		document.getElementById("lname").value = "";
-		document.getElementById("email").value = "";
-		document.getElementById("db").value = "";
-		document.getElementById("pw").value = "";
-		document.getElementById("pw_confirm").value = "";
-		document.body.scrollTop = document.documentElement.scrollTop = 0;
-		document.getElementById("success").style.display = "none";
+/**
+ * clears the form, scrolls to the top of the window, hides the messages
+ and resets the edit state.
+ * 
+*/	
+	function clearForm()
+	{	$('form')[0].reset();
+		$(window).scrollTop(0);
+		$("#submit").html("Register");
+		$("#editState").val("");
+		$("#success").hide();
+		clearErrors();
+	}
+/**
+ * Event that filters the table as per the value entered in the search bar
+ * 
+*/
+$(document).ready(function(){
+	$("#search").on("keyup", function() {
+	$("#success").hide();
+    var value = $(this).val().toLowerCase();
+    $("#dataList tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+	
+	$("#search").on({
+		mouseenter: function(){
+			$(this).css("background-color", "#cccccc");
+		}, 
+		mouseleave: function(){
+			 $(this).css("background-color", "#ffffff");
+		}
+	});
+	$("#fname").on("keyup", function() {
+		$("#fError").html("");
+		$("#lError").css("margin-left", "224px");
+	});
+	$("#lname").on("keyup", function() {
+		$("#lError").html("");
+	});
+	$("#db").on("focus", function() {
+		$("#dbError").html("");
+	});
+	$("#email").on("keyup", function() {
+		$("#mailError").html("");
+	});
+	$("#pw").on("keyup", function() {
+		$("#pwError").html("");
+	});
+	$("#pw_confirm").on("keyup", function() {
+		$("#pwcError").html("");
+	});
+});
+	function clearErrors()
+	{	$("#pwcError").html("");
+		$("#pwError").html("");
+		$("#dbError").html("");
+		$("#mailError").html("");
+		$("#lError").html("");
+		$("#fError").html("");
 	}

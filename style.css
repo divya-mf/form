@@ -168,3 +168,38 @@
 	{ 
 		color:#f44336;
 	}
+	#search
+	{
+		margin: 10px 0px 5px 542px;
+		border: 1px solid #ccc;
+		/* display: block; */
+		padding: 7px;
+		border-radius: 13px	;
+	}
+	#search:focus{
+		outline: none;
+		border-radius: 13px;
+		border: 1px solid #4CAF50;
+	}
+	.error{
+		
+		font-size: 12px;
+		color: red;
+	}
+	#dbError{
+		margin-left: 222px;
+	}
+	#pwError{
+		margin-left: 230px;
+	}
+	#pwcError{
+		margin-left: 173px;
+	}
+	#mailError{
+		margin-left: 295px;
+	}
+	
+	#fError{
+		margin-left: 40px;
+	}
+	
