@@ -1,6 +1,5 @@
 
 
-
 var userModule = (function () {
 
 	function myFunction() {

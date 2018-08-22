@@ -294,7 +294,7 @@ var formModule = (function () {
 	 *
 	*/
 	function checkErrors(){
-		var error=0;
+		var error=0; 
 		var email =$email.val();
 		var at = email.indexOf("@");
 		var dot = email.lastIndexOf(".");

@@ -62,7 +62,6 @@ $row = $result->fetch_assoc();
 			</ul>
 			<input type="hidden" name="save" id="save" value="save">
 			<button name="submit" class="btn" id="update" title='save' onclick="userModule.save(<?php echo $id; ?>)" ><i class='fa fa-save'></i> </button>
-	
 	</div>
 	<div class="dropdown">
 		<button onclick="userModule.myFunction()" class="dropbtn">Search Users</button>

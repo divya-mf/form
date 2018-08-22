@@ -21,7 +21,6 @@
     border-bottom: 1px solid #ddd;
     width: 176px;
 }
-
 #myInput:focus {outline: 3px solid #ddd;}
 
 .dropdown {

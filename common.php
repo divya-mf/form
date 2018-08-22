@@ -1,5 +1,6 @@
 <?php
 function base_url(){
+	
 $base_dir = __DIR__;
 
 // server protocol

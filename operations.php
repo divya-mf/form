@@ -50,7 +50,7 @@ if(isset($_POST['delete']))
     $stmt = $conn->prepare("DELETE FROM registered_users WHERE id=?");
     $stmt->bind_param("i", $id);
     $stmt->execute(); 
-    $success = "deleted successfully";
+    $success = "deleted successfully"; 
     echo $success;
 }
 
