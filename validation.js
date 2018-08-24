@@ -5,7 +5,7 @@
  * if validation succeeds displays the data in a tabular form
  * and edits or deletes the data from the table as per choise.
  */
- 
+  
 var formModule = (function () {
 	var $fName = $('#fname'),
 		$lName = $('#lname'),

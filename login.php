@@ -16,7 +16,7 @@ if(isset($_POST['email'])!='' && isset($_POST['pw'])!=''){
     $_SESSION['id']=$row["id"];
     header("Location:user.php");
     exit();
-  }else {
+  }else { 
     $msg= "incorrect credentials";
   }
 }

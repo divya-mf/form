@@ -1,6 +1,6 @@
 <?php
 	include("config.php");
-
+ 
 	$fname= $_POST['fname'];
 	$lname= $_POST['lname'];
 	$db= $_POST['db'];

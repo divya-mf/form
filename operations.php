@@ -1,6 +1,8 @@
 <?php
 session_start();
+$id = $_SESSION['id'];
 include("config.php");
+
 if(isset($_POST['uid']))
 {
   $uid = $_POST['uid'];
@@ -46,14 +48,34 @@ if(isset($_POST['save']))
 
 if(isset($_POST['delete']))
 {
-    $id=$_POST['id'];
+    $uid=$_POST['id'];
     $stmt = $conn->prepare("DELETE FROM registered_users WHERE id=?");
-    $stmt->bind_param("i", $id);
+    $stmt->bind_param("i", $uid);
     $stmt->execute(); 
     $success = "deleted successfully"; 
     echo $success;
 }
 
+if(isset($_POST['userLogin']))
+{
+$sql = "SELECT * FROM registered_users WHERE id = '$id' ";
+$result = $conn->query($sql);
+$row=array();
+$row = $result->fetch_assoc();
 
+echo json_encode($row);
+}
+
+if(isset($_POST['allUsers']))
+{
+    $id = $_SESSION['id'];
+    $sql = "SELECT id,first_name,last_name FROM registered_users WHERE id NOT IN ('$id') ";
+    $result = $conn->query($sql);
+    $users=array();
+    while($res = $result->fetch_assoc()) {
+        $users[]=$res;
+    }
+    echo json_encode($users);
+}
 
 ?>

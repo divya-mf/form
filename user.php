@@ -1,17 +1,9 @@
 <?php
-if(empty($_SESSION)) // if the session not yet started 
-   session_start();
-
+session_start();
 if(!isset($_SESSION['id'])) { //if not yet logged in
    header("Location: login.php");// send to login page
    exit;
-} 
-include("config.php");
-$id = $_SESSION['id'];
-$sql = "SELECT * FROM registered_users WHERE id = '$id' ";
-$result = $conn->query($sql);
-$row = $result->fetch_assoc();
-?>
+} ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,15 +15,15 @@ $row = $result->fetch_assoc();
 	<div id="details">
 		<div id="msg">
 		</div>
-		<h1>WELCOME <?php echo $row['first_name']; ?> </h1>
+		<h1>WELCOME <span class="frst"></span> </h1>
 		<h3>Your Details:</h3>
 		<ul>
-			<li>First Name:<?php echo $row['first_name']; ?></li>
-			<li>Last Name:<?php echo $row['last_name']; ?></li>
-			<li>Email ID:<?php echo $row['email_id']; ?></li>
-			<li>Birth Date:<?php echo $row['birth_date']; ?></li>
-			<li>Gender:<?php echo $row['gender']; ?></li>
-			<li>Blood Group:<?php echo $row['blood_group']; ?></li>
+			<li>First Name:<span class="frst"></span></li>
+			<li>Last Name:<span id="lst"></span></li>
+			<li>Email ID:<span id="em"></span></li>
+			<li>Birth Date:<span id="bd"></span></li>
+			<li>Gender:<span id="gen"></span></li>
+			<li>Blood Group:<span id="bg"></span></li>
 		</ul>
 		<button class="btn" title='Edit' onclick="userModule.edit()"><i class='fa fa-edit'></i> </button>
 	</div>
@@ -67,12 +59,11 @@ $row = $result->fetch_assoc();
 		<button onclick="userModule.myFunction()" class="dropbtn">Search Users</button>
 		<div id="myDropdown" class="dropdown-content">
 		<input type="text" placeholder="Search.." id="myInput" onkeyup="userModule.filterFunction()">
-		<?php 
-		    $sql = "SELECT id,first_name,last_name FROM registered_users WHERE id NOT IN ('$id') ";
-			$result = $conn->query($sql);
-			while($res = $result->fetch_assoc()) {?>
-		    <a onclick="userModule.showUser(<?php echo $res['id']; ?>)"><?php echo $res['first_name'].' '. $res['last_name']; ?> </a>
-			<?php } ?>
+	
+				<div id="usersList">
+				</div>
+		    
+			
 		</div>
 	</div>
 	<a href="logout.php" id="logout" class="dropbtn">Logout</a>
@@ -80,11 +71,16 @@ $row = $result->fetch_assoc();
 		<h3>User Details:</h3>
 			<div id="all">
 			</div>
-			<?php if($row['type']=='admin') {?> <button id="del" title='delete' onclick="userModule.deleteUser()"><i class='fa fa-trash'></i> </button>  <?php } ?>
+			 <button id="del" title='delete' onclick="userModule.deleteUser()"><i class='fa fa-trash'></i> </button>  
 	</div>
 </body> 
 <script src="userProfile.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+<script>
+	//method that is called when the document is completely loaded
+	$(document).ready(function(){
+		userModule.init();
+	});
+	</script>
 
 </html>
