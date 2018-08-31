@@ -5,14 +5,15 @@
     font-size: 16px;
     border: none;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .dropbtn:hover, .dropbtn:focus {
     background-color: #3e8e41;
 }
 
-#myInput {
-    border-box: box-sizing;
+#srch {
+    border-box: box-sizing;s
     background-position: 14px 12px;
     background-repeat: no-repeat;
     font-size: 14px;
@@ -21,11 +22,11 @@
     border-bottom: 1px solid #ddd;
     width: 176px;
 }
-#myInput:focus {outline: 3px solid #ddd;}
+#srch:focus {outline: 3px solid #ddd;}
 
 .dropdown {
+    display: none;
     position: relative;
-    display: inline-block;
    
 }
 
@@ -56,18 +57,32 @@
 #details{
     border-radius: 5px;
     background-color: #f2f2f2;
-    padding: 20px;
+    padding: 25px;
     width: 500px;
-    margin: 130px 400px 200px 130px;
-    float: left;
+    margin: 100px 400px 200px 400px;
+    font-family: cursive;
+    font-size: 18px;
+
+}
+#menu{
+    float: right;
 }
 #userDetails{
-    display:none;
-    border-radius: 5px;
-    background-color: #f2f2f2;
-    padding: 50px;
-    width: 500px;
-    margin: 83px 304px 200px 717px;
+     display: none;
+   background: #333;
+    padding: 35px;
+    border: 2px solid #ddd;
+    float: left;
+    font-size: 1.2em;
+    position: fixed;
+    top: 20%;
+    left: 33%;
+    font-family: cursive;
+    font-size: 18px;
+    z-index: 99999;
+    box-shadow: 0px 0px 20px #999;
+    -moz-box-shadow: 0px 0px 20px #999;
+    color: white;
 
 }
 #userDetails ul li{
@@ -75,8 +90,11 @@
     text-align: left;
 }
 #del{
-    margin-left: 170px;
+    margin-left: 340px;
     display:none;
+}
+#close{
+    margin-left: 340px;
 }
 .btn{
     margin-left: 440px;

@@ -1,4 +1,17 @@
 <?php
+
+
+function sanitize($data) {
+      $data = trim($data);
+      $data = stripslashes($data);
+      $data = htmlspecialchars($data);
+      return $data;
+    }
+
+
+
+
+
 function base_url(){
 	
 $base_dir = __DIR__;

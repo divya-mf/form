@@ -6,245 +6,255 @@
  */
  
 
-
 var userModule = (function () {
+  var $usersList=$("#usersList"),
+      $users=$("#users");
 
-	function myFunction() {
-    $("#myDropdown").toggleClass("show");
-}
-
-/**
- * FilterFunction
- * filters the list as per the value entered in search field
- * 
- * @returns {list}
-*/
-function filterFunction() {
-    var input, filter, ul, li, a, i;
-    input = $("#myInput");
-    filter = input.value.toUpperCase();
-    div = $("#myDropdown");
-    a = div.getElementsByTagName("a");
-    for (i = 0; i < a.length; i++) {
-        if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
-            a[i].style.display = "";
-        } else {
-            a[i].style.display = "none";
-        }
-    }
-}
+ 
+ /**
+  * search
+  * toggles the display of dropdown content in search users
+  * 
+  * @returns {list}
+  */
+	function search() {
+    $users.toggleClass("show");
+  }
 
 
-/**
- * showUser
- * Displays the details of the selected user
- * @param {int} uid -user id of the selected user.
- * @returns {list}
-*/
-function showUser(uid){
-	$("#userDetails").hide();
- $.ajax({
+  /**
+   * FilterFunction
+   * filters the list as per the value entered in search field
+   * 
+   * @returns {list}
+  */
+  function filterFunction() {
+      var input, filter, ul, li, a, i;
+      
+      input = $("#srch");
+      filter = input.val().toUpperCase();
+      div = $users;
+      a = div.find("a");
 
+      for (i = 0; i < a.length; i++) {
+          if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+              a[i].style.display = "";
+          } else {
+              a[i].style.display = "none";
+          }
+      }
+  }
+
+
+  /**
+   * showUser
+   * Displays the details of the selected user
+   * @param {int} uid -user id of the selected user.
+   * @returns {list}
+  */
+  function showUser(uid){
+    $.ajax({
             url: getBaseUrl()+"operations.php",
             type: "POST",
             data: {"uid": uid},
             
             success: function(data) {
-              
-                 $("#userDetails").show();   
-                 $("#all").html(data);
+              $("#userDetails").show();
+              $("#del").show();   
+              $("#all").html(data);
             },
             error:function(data)
-		  {
-		  	alert("error");
-		  }
-      }); 
+      		  {
+      		  	alert("error");
+      		  }
+          }); 
+  }
 
-}
+  
 
-/**
- * getBaseUrl
- * captures the base url.
- * 
- * @returns {url}
-*/
-function getBaseUrl() {
-	var re = new RegExp(/^.*\//);
-	return re.exec(window.location.href);
-}
+  /**
+   * save
+   * updates the edited information
+   * @param {int} id -user id of the logged in user
+   * @returns {boolean value}
+  */
+  function save(){
+  			var id =id;
+  			var fname=$("#frst1").val();
+  			var lname=$("#lst1").val();
+  			var email=$("#em1").val();
+  			var url=getBaseUrl();
 
-/**
- * save
- * updates the edited information
- * @param {int} id -user id of the logged in user
- * @returns {boolean value}
-*/
-function save(id){
-			var id =id;
-			var fname=$("#fname").val();
-			var lname=$("#lname").val();
-			var email=$("#email").val();
-			var db=$("#db").val();
-			var bGroup=$("#bGroup").val();
-			var gender=$("input[name='gender']:checked").val();
-			var save=$("#save").val();
-			var url=getBaseUrl();
-			$.ajax({
-            url: url+"operations.php",
-            type: "POST",
-            data: {
-              "id": id,
-			  "fname": fname,
-			  "lname" :lname,
-			  "db"	: db,
-			  "email" :email,
-			  "gender" :gender,
-			  "blood_group" :bGroup,
-			  "save":save
-			},
-            
-            success: function(data) {
-              
-              location.reload();
-              $('#msg').html(data)
-            },
-            error:function(data)
-		  {
-		  	console.log("error");
-		  }
-      }); 
-    
-
-}
-/**
- * deleteUser
- * deletes the information of the selected user.
- * 
- * @returns {boolean value}
-*/
-function deleteUser(){
-			var id =$("#user_id").val();
-			var url=getBaseUrl();
-			$.ajax({
-            url: url+"operations.php",
-            type: "POST",
-            data: {
-              "id": id,
-			  "delete":"delete"
-			},
-            
-            success: function(data) {
-              
-              location.reload();
-              $('#msg').html(data)
-            },
-            error:function(data)
-		  {
-		  	console.log("error");
-		  }
-      }); 
-    
-
-}
+  			$.ajax({
+                url: url+"operations.php",
+                type: "POST",
+                data: {
+                      "id": id,
+              			  "fname": fname,
+              			  "lname" :lname,
+              			  "email" :email,
+              			  "save":save
+              			},
+                
+                success: function(data) {
+                  
+                  location.reload();
+                  $('#msg').html(data)
+                }
+              }); 
+      
+  }
 
 
-/**
- * edit
- * event that is fired when edit button is clicked.
- * 
- * @returns {change in view}
-*/
-function edit()
-{
-	$("#details").hide();
-	$("#editDetails").show();
-}
+  /**
+   * deleteUser
+   * deletes the information of the selected user.
+   * 
+   * @returns {boolean value}
+  */
+  function deleteUser(){
+  			var uid =$("#user_id").val();
+  			var url=getBaseUrl();
+  			$.ajax({
+                url: url+"operations.php",
+                type: "POST",
+                data: {
+                      "uid": uid,
+        			        "delete":"delete"
+    			           },   
+                success: function(data)
+                {
+                  $('#msg').html(data);
+                  $("#userDetails").hide();
+                  getAllUsers();
 
-/**
- * getAllUsers
- * function that does ajax call and fetch all users.
- * 
- * @returns {array}
-*/
-function getAllUsers()
-{
-  var users=[];
-  $.ajax({
+                }
+              }); 
+  }
+
+
+  /**
+   * edit
+   * event that is fired when edit button is clicked.
+   * 
+   * @returns {change in view}
+  */
+  function edit()
+  {
+  	$("#details").hide();
+  	$("#editDetails").show();
+    $("#frst1").val($(".frst").html());
+    $("#lst1").val($(".lst").html());
+    $("#em1").val($(".em").html());
+  }
+
+  /**
+   * getAllUsers
+   * function that does ajax call and fetch all users.
+   * 
+   * @returns {array}
+  */
+  function getAllUsers()
+  {
+    var users=[];
+    $usersList.html(" ");
+
+    $.ajax({
             url: getBaseUrl()+"operations.php",
             type: "POST",
             data: {
-              "allUsers": "allUsers",
-          },
-            success: function(data) {
+                    "allUsers": "allUsers",
+                  },
+            success: function(data)
+            {
               users=JSON.parse(data);
               $.each( users, function( index, value ) {
-              $("#usersList").append('<a onclick="userModule.showUser('+users[index].id+')">'+
-               users[index].first_name+' ' +users[index].last_name+'</a>')
+                $usersList.append('<a onclick="userModule.showUser('+users[index].id+')">'+
+                 users[index].first_name+' ' +users[index].last_name+'</a>')
               });
-            
-            },
-            error:function(data)
-      {
-        $("#msg").html("error");
-      }
-      });
-}
+              
+            }
+          });
+  }
 
-/**
- * loggedUser
- * function that does ajax call and fetch details of logged in user.
- * 
- * @returns {array}
-*/
-function loggedUser(){
-  var details;
- $.ajax({
-            url: getBaseUrl()+"operations.php",
-            type: "POST",
-            data: {
-              "userLogin": "userLogin",
-      },
-            
-            success: function(data) {
-              details=JSON.parse(data);
-             $(".frst").html(details.first_name);
-             $("#lst").html(details.last_name);
-             $("#bd").html(details.birth_date);
-             $("#em").html(details.email_id);
-             $("#bg").html(details.blood_group);
-             $("#gen").html(details.gender);
-             if(details.type=='admin')
-              $("#del").show();
-            },
-            error:function(data)
-      {
-        console.log("error");
-      }
-      });
-}
-/**
- * init
- * function that is being called at the time of loading file.
- * 
- * @returns {boolean value}
-*/
-function init(){
+  /**
+   * loggedUser
+   * function that does ajax call and fetch details of logged in user.
+   * 
+   * @returns {array}
+  */
+  function loggedUser(){
+    var details;
 
- getAllUsers();
- loggedUser();
+    $.ajax({
+              url: getBaseUrl()+"operations.php",
+              type: "POST",
+              data: {
+                "userLogin": "userLogin",
+              },
+              success: function(data)
+              {
+                 details=JSON.parse(data);
 
-}
+                 $(".frst").html(details.first_name);
+                 $(".lst").html(details.last_name);
+                 $(".em").html(details.email);
 
-return{
-		edit:edit,
-		save:save,
-		deleteUser:deleteUser,
-		showUser: showUser,
-		filterFunction:filterFunction,
-		myFunction : myFunction,
-    getAllUsers:getAllUsers,
-    loggedUser:loggedUser,
-		init:init
-	}
+                 if(details.role=="admin")
+                 {
+                   $(".dropdown").css('display', 'inline-block');
+                 }
+              }
+           });
+  }
+
+
+  /**
+   * closeModal
+   * event that is fired when close button is clicked in the user details modal.
+   * 
+   * @returns {change in view}
+  */
+  function closeModal()
+  {
+    $("#userDetails").hide();   
+  }
+
+
+  /**
+   * getBaseUrl
+   * captures the base url.
+   * 
+   * @returns {url}
+  */
+  function getBaseUrl() {
+    var re = new RegExp(/^.*\//);
+    return re.exec(window.location.href);
+  }
+
+
+  /**
+   * init
+   * function that is being called at the time of loading file.
+   * 
+   * @returns {boolean value}
+  */
+  function init(){
+
+   getAllUsers();
+   loggedUser();
+
+  }
+
+  return{
+  		edit:edit,
+  		save:save,
+  		deleteUser:deleteUser,
+  		showUser: showUser,
+      closeModal:closeModal,
+  		filterFunction:filterFunction,
+  		search : search,
+  		init:init
+  	}
 
 })();
