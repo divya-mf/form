@@ -12,8 +12,15 @@ return [
         // Monolog settings
         'logger' => [
             'name' => 'slim-app',
-            'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
+            'path' =>  __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
+        ],
+
+        "db" => [
+            "FM_HOST" => "172.16.9.42",
+            "FM_FILE" => "userActivities.fmp12",
+            "FM_USER" => "admin",
+            "FM_PASS" => "mindfire"
         ],
     ],
 ];

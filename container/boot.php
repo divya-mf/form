@@ -4,32 +4,16 @@
  * 
 */
 require '../vendor/autoload.php';
-
+$settings = require _DIR_ . '/../src/settings.php';
 $app = new \Slim\App([
 	'settings' => [
 		'displayErrorDetails'=> true,
-	]
+	],
 ]);
 
-$container=$app->getContainer();
+$app = new \Slim\App($settings);
+//fetch all the dependencies
+require __DIR__ . '/../src/dependencies.php';
 
-$container['AuthController'] = function ($container)
-{
-	return new \Src\Controllers\AuthController($container);
-};
-
-$container['UserActivitiesController'] = function ($container)
-{
-	return new \Src\Controllers\UserActivitiesController($container);
-};
-
-
-$container['notFoundHandler'] = function ($container)
-{
-	return function ($request, $response){
-		die('404 PAGE NOT FOUND');
-		return $response->withStatus(404);
-	};
-};
 // Register routes
 require '../src/routes.php';

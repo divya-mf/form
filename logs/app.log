@@ -1,0 +1,27 @@
+[2018-09-03 14:39:00] slim-app.INFO: Slim-Skeleton '/' route [] {"uid":"db66769"}
+[2018-09-03 14:39:08] slim-app.INFO: Slim-Skeleton '/' route [] {"uid":"575a641"}
+[2018-09-06 11:10:47] NULL.INFO: No records match the request [] {"uid":"780373c"}
+[2018-09-06 11:22:24] slimprojecct.INFO: No records match the request [] {"uid":"663f06a"}
+[2018-09-06 12:05:19] slimprojecct.INFO: HTTP/1.1 404 Not Found Content-Type: text/html; charset=UTF-8   [] {"uid":"3f0889e"}
+[2018-09-06 12:08:07] slimprojecct.INFO: HTTP/1.1 405 Method Not Allowed Content-Type: text/html; charset=UTF-8   [] {"uid":"2a02438"}
+[2018-09-06 12:22:01] slimprojecct.INFO: HTTP/1.1 500 Internal Server Error Content-Type: text/html; charset=UTF-8   [] {"uid":"c7eb636"}
+[2018-09-06 12:33:41] slimprojecct.INFO: No records match the request [] {"uid":"327bb31"}
+[2018-09-06 12:57:21] slimprojecct.INFO: HTTP/1.1 404 Not Found Content-Type: text/html; charset=UTF-8   [] {"uid":"0726d42"}
+
+[2018-09-06 13:09:47] slimprojecct.INFO: No records match the request [] {"uid":"3302c0b"}
+[2018-09-06 13:18:07] slimprojecct.INFO: HTTP/1.1 500 Internal Server Error Content-Type: text/html; charset=UTF-8   [] {"uid":"7485564"}
+[2018-09-06 13:18:51] slimprojecct.INFO: HTTP/1.1 500 Internal Server Error Content-Type: text/html; charset=UTF-8   [] {"uid":"b3b4121"}
+[2018-09-06 13:38:47] slimprojecct.INFO: HTTP/1.1 404 Not Found Content-Type: text/html; charset=UTF-8   [] {"uid":"60af05f"}
+[2018-09-06 13:40:02] slimprojecct.INFO: HTTP/1.1 404 Not Found Content-Type: text/html; charset=UTF-8   [] {"uid":"1ec52e3"}
+[2018-09-06 13:48:52] slimprojecct.INFO: HTTP/1.1 404 Not Found Content-Type: text/html; charset=UTF-8   [] {"uid":"2d9956a"}
+[2018-09-06 13:56:59] slimprojecct.INFO: HTTP/1.1 500 Internal Server Error Content-Type: text/html; charset=UTF-8   [] {"uid":"8d1b502"}
+[2018-09-06 14:17:07] slimprojecct.INFO: HTTP/1.1 500 Internal Server Error Content-Type: text/html; charset=UTF-8   [] {"uid":"7ecbdb7"}
+[2018-09-06 14:17:52] slimprojecct.INFO: HTTP/1.1 500 Internal Server Error Content-Type: text/html; charset=UTF-8   [] {"uid":"2285d00"}
+[2018-09-06 14:22:22] slimprojecct.INFO: HTTP/1.1 500 Internal Server Error Content-Type: text/html; charset=UTF-8   [] {"uid":"9a3d1b4"}
+[2018-09-06 14:25:42] slimprojecct.INFO: 401=> No records match the request [] {"uid":"a9186e7"}
+[2018-09-06 14:26:35] slimprojecct.INFO: 401=> No records match the request [] {"uid":"8e73cf5"}
+[2018-09-06 14:27:29] slimprojecct.INFO: 401=> No records match the request [] {"uid":"005c08b"}
+[2018-09-06 14:36:22] slimprojecct.INFO: 401=> No records match the request [] {"uid":"cffcb11"}
+[2018-09-06 14:36:46] slimprojecct.INFO: 401=> No records match the request [] {"uid":"b7797b2"}
+[2018-09-06 14:55:46] slimprojecct.INFO: 401=> No records match the request [] {"uid":"d76e2d0"}
+[2018-09-06 15:26:13] slimprojecct.INFO: 401=> No records match the request [] {"uid":"9d84820"}

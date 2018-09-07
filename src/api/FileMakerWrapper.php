@@ -4,17 +4,23 @@
  * class that manages all the methods required to interact with database
  *
  */
+namespace Src\Api;
+
 class FileMakerWrapper{
-	private $fm;
+    private $fm;
+    private $class;
+    private $log;
 
 	/**
  	 * Constructor
  	 * includes the configuration file for database connectivity
  	 * initializes the private class variable with FileMaker object 
  	 */
-	public function __construct(){
-		
-		$this->fm=include(__DIR__ .'/config.php'); //FileMaker connection object
+	public function __construct($container){
+        $this->fm=$container->get('db'); //FileMaker connection object
+        $this->class=$container->get('Constants')->fileMaker;
+        $this->log=$container->get('logger');
+        
 	}
 
 	/**
@@ -26,18 +32,24 @@ class FileMakerWrapper{
      * @param string $value The value that needs to be searched in the field.
      * returns {array}
      */
-	public function getOne($layout, $field, $value)
+	public function getOne($layout, $loginData)
 	{
-		$findCommand = $this->fm->newFindCommand($layout);
-        $findCommand->addFindCriterion($field,$value);
+        $findCommand = $this->fm->newFindCommand($layout);
+        foreach ($loginData as $key => $val) {
+            $findCommand->addFindCriterion($key,"==$val");
+        }
         $result = $findCommand->execute();
-        $records = $result->getRecords();
-        $status['msg']=array('status'=> "Ok", 'code'=> 200);
-        $status['records']=$records;
-        if (FileMaker::isError($records))
+        if ($this->class::isError($result))
         {   
-            $status['msg']=array('status'=> $records->getMessage(), 'code'=> $records->code);
-            $status['records']=[];
+            $status['msg']=array('status'=> $result->getMessage(), 'code'=> $result->code);
+            $status['records']=[]; 
+            $this->log->addInfo($result->code.'=> '.$result->getMessage());
+        }
+        else
+        {
+            $records = $result->getRecords();
+            $status['msg']=array('status'=> "Ok", 'code'=> 200);
+            $status['records']=$records;
         }
         return $status;
     }
@@ -56,10 +68,11 @@ class FileMakerWrapper{
         $records = $result->getRecords();
         $status['records']=$records;
         $status['msg']=array('status'=> "Ok", 'code'=> 200);
-        if (FileMaker::isError($records))
+        if ($this->class::isError($records))
         {
             $status['msg']=array('status'=> $records->getMessage(), 'code'=> $records->code);
             $status['records']=[];
+            $this->log->addInfo($records->code.'=> '.$records->getMessage());
         } 
         return $status;
     } 
@@ -103,19 +116,21 @@ class FileMakerWrapper{
 
         $result = $findCommand->execute();
 
-        if (FileMaker::isError($result))
+        if ($this->class::isError($result))
         {
             $status['msg']=array('status'=> $result->getMessage(), 'code'=> $result->code);
             $status['records']=[];
+            $this->log->addInfo($records->code.'=> '.$records->getMessage());
         }
         else{
             $records = $result->getRecords(); 
             $status['records']=$records;
             $status['msg']=$records->code.'=> '.$records->getMessage();
-            if (FileMaker::isError($records))
+            if ($this->class::isError($records))
             {
                 $status['msg']=array('status'=> $records->getMessage(), 'code'=> $records->code);
                 $status['records']=[];
+                $this->log->addInfo($records->code.'=> '.$records->getMessage());
             }
         }
 
@@ -136,14 +151,14 @@ class FileMakerWrapper{
         $rec = $this->fm->createRecord($layout, $data);
         $result = $rec->commit();
 
-       if (FileMaker::isError($result)) 
+       if ($this->class::isError($result)) 
        {
-        $status['msg']=$result->code.'=> '.$result->getMessage();
-        $status['msg']='false';
+        $status=array('status'=> $result->getMessage(), 'code'=> $result->code);
+        $this->log->addInfo($result->code.'=> '.$result->getMessage());
         return $status;
        }
 
-       return $status['msg']='true';
+       return  $status=array('status'=> "Ok", 'code'=> 200, 'description'=> "Activity added successfully");
    }
 
    
