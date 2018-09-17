@@ -1,0 +1,78 @@
+
+<div id="activityView">
+    
+    <span id="msg"></span>
+    
+  
+  
+    <div id="newActivity" *ngIf="newActivity">
+      <div *ngIf="success" id="success">Registered Successfuly!</div>
+      <form method="post" [formGroup]="activityForm">
+        <i class="fa fa-close" title="cancel" (click)="cancel()" id="cancel"></i>
+        <h3>ADD ACTIVITY</h3> 
+        <label>Description:</label>
+        <textarea matInput rows="3" cols="10" id="description" formControlName="description"></textarea>
+        <mat-error class="errors" *ngIf="f.description.touched && f.description.invalid"> Description is required</mat-error>
+        <label>Assign to:</label>
+        <select id="user_id" formControlName="user_id">
+            <option *ngFor="let value of users" [value]='value.id'>
+                {{value.first_name}} {{value.last_name}}</option>
+         </select>
+        <label>Priority:</label>
+        <select id="aPrioirty" formControlName="priority">
+        <option > HIGH </option>
+        <option > MEDIUM </option>
+        <option> LOW </option> </select>
+        <label>Due Date:</label>
+        <input matInput type="date" id="date"formControlName="date">
+        <mat-error class="errors" *ngIf="f.date.touched && f.date.invalid"> Date is required</mat-error>
+        <i class="fa fa-check" title="Add" (click)="addActivity()" id="save"></i>
+      </form>
+    </div>
+  
+    <div id="activityList" *ngIf="activityList">
+      <table style="width: 100%;"><tr><td><h5> ACTIVITY LIST </h5></td><td>
+        <mat-form-field appearance="outline"  class="global" ><input matInput class="gSearch" id="global" #gSearch (keyup)="globalSearch(gSearch.value)"  placeholder="Search" type="text"></mat-form-field>
+      </td>
+     <td> <button mat-fab color="primary" class=" float" *ngIf="activityList" (click)="newAddActivity()"><i class="fa fa-plus" title="Add Activity"   id="addActivity"></i> </button></td> </tr></table>
+    
+      <table id="actTable"  mat-table>
+        <thead id="tabHead">
+            <tr>
+                <th mat-header-row> Todo <div class="search"><input class="cSearch" placeholder="Search"  id="todoSearch" #search (keyup)="todoSearch(search.value)" type="text"></div> </th>
+                <th mat-header-row> In Progress<div class="search"><input class="cSearch" placeholder="Search"  id="progSearch" #search1 (keyup)="progSearch(search1.value)" type="text"> </div></th>
+                <th mat-header-row> Awaiting QA<div class="search"><input class="cSearch" placeholder="Search"  id="waitSearch" #search2 (keyup)="waitSearch(search2.value)" type="text"></div></th>
+                <th mat-header-row> Done<div class="search"><input class="cSearch"  placeholder="Search"  id="doneSearch" #search3 (keyup)="doneSearch(search3.value)" type="text"></div> </th>
+              </tr>
+        </thead>
+        <tbody id="tabBody">
+          <tr>
+            <td id="todo">
+              <div class="task" *ngFor="let value of todo"> <div class="priority" title="Priority" id={{value.id}}  class ={{value.priority}}>{{value.priority}}</div> <div class="creationDate">{{ value.creationDate}} </div> <li> <i class="fa fa-comment" title="Title"></i> 
+              {{value.description}}</li> <li> <i class="fa fa-user" title="Assigned to" aria-hidden="true"></i> {{value.user_id}}</li><div class="dueDate"> Due Date: {{value.dueDate }}</div></div>
+            
+            </td>
+
+            <td id="inProgress">
+            <div class="task"  *ngFor="let value of progress" > <div class="priority" title="Priority" id={{value.id}}  class ={{value.priority}}>{{value.priority}}</div> <div class="creationDate">{{ value.creationDate}} </div> <li> <i class="fa fa-comment" title="Title"></i> 
+                  {{value.description}}</li> <li> <i class="fa fa-user" title="Assigned to" aria-hidden="true"></i> {{value.user_id}}</li><div class="dueDate"> Due Date: {{value.dueDate }}</div></div>
+                
+            </td>
+
+            <td id="waiting">
+                <div class="task"  *ngFor="let value of waiting" > <div class="priority" title="Priority" id={{value.id}}  class ={{value.priority}}>{{value.priority}}</div> <div class="creationDate">{{ value.creationDate}} </div> <li> <i class="fa fa-comment" title="Title"></i> 
+                  {{value.description}}</li> <li> <i class="fa fa-user" title="Assigned to" aria-hidden="true"></i> {{value.user_id}}</li><div class="dueDate"> Due Date: {{value.dueDate }}</div></div>
+               
+            </td>
+
+            <td id="done">
+                <div class="task" *ngFor="let value of done" > <div class="priority" title="Priority" id={{value.id}} class ={{value.priority}}>{{value.priority}}</div> <div class="creationDate">{{ value.creationDate}} </div> <li> <i class="fa fa-comment" title="Title"></i> 
+                  {{value.description}}</li> <li> <i class="fa fa-user" title="Assigned to" aria-hidden="true"></i> {{value.user_id}}</li><div class="dueDate"> Due Date: {{value.dueDate }}</div></div>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+   <a [routerLink]="['/userProfile',id]" id="back"> <i class="fa fa-angle-double-left"></i> Back</a> 
+  </div>
