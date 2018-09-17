@@ -1,0 +1,25 @@
+<div *ngIf="status;else showError">
+  <div class="login">
+    <h2>Login Here</h2>
+    <form method = "post" [formGroup]="loginForm" (ngSubmit)="onSubmit()" >
+     <div>
+       <mat-form-field appearance="outline" class="loginMargins">
+          <mat-label>Email</mat-label><input matInput formControlName="email"  placeholder="Your email"></mat-form-field>
+      <mat-error *ngIf="f.email.touched && f.email.invalid"> Email must be a valid email</mat-error>
+    </div>
+    <div><mat-form-field appearance="outline" class="loginMargins"><input [type]="hide ? 'password' : 'text'" matInput formControlName="password"  placeholder="Password"></mat-form-field>
+      <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+      <mat-error *ngIf="f.password.touched && f.password.invalid"> Password is required</mat-error>
+    </div> 
+      <mat-error style="float:right"> {{msg}}</mat-error>
+      <input type="submit" class="signupbtn"  value="Submit"> 
+       
+    </form>
+    <div  style="float:right">
+        <p>Don't have an account? <a [routerLink]="['/register']"> Sign Up</a>.</p>
+    </div>
+  </div>
+</div>  
+<ng-template #showError>
+  <p class="alert alert-danger text-center">Server Down! Please try later</p>
+</ng-template>
