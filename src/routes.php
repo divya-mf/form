@@ -9,3 +9,5 @@ $app->post('/login','AuthController:login');
 $app->get('/users','UserActivitiesController:getAllUsers');
 $app->post('/activities','UserActivitiesController:getAllActivities');
 $app->post('/addActivity','UserActivitiesController:addActivity');
+$app->post('/getUserDetails','UserActivitiesController:getUserDetails');
+//$app->get('/allActivities','UserActivitiesController:allActivities');

@@ -28,14 +28,17 @@ class AuthController extends Controller
      */
     public function signUp($request, $response)
     {
-        $email = $request->getParsedBody()['email'];
         //array to store the values to pass into the database
-        
+        $data=$request->getParsedBody();
+        $email = $data['email'];
+        $password =  password_hash($data['password'], PASSWORD_DEFAULT);
+
         $userDetails = array(
-                    'firstName' => $request->getParsedBody()['fname'],
-                    'lastName' => $request->getParsedBody()['lname'],
+                    'firstName' => $data['firstName'],
+                    'lastName' => $data['lastName'],
                     'email' => $email,
-                    'password' => $request->getParsedBody()['password']
+                    'password'=> $password
+
                 );
         $checkEmail = array(
                     'email'=> $email
@@ -47,13 +50,14 @@ class AuthController extends Controller
         if (empty ($result['records'])) 
         {
             $newUser = $this->fmMethodsObj->createRecord('USR', $userDetails);
-
+           // $passStatus = $this->fmMethodsObj->performScript('USR', 'hashPassword',$password);  
             $res = array('description'=>"registered successfully");  
-            $http_status_code = 200;                
+            $http_status_code = 200;
+             
         }
         else
         { 
-            $res = array('description'=>"email alreadyy exists");
+            $res = array('description'=>"email already exists");
             $http_status_code = 400;        
         }
 
@@ -72,33 +76,37 @@ class AuthController extends Controller
     public function login($request, $response)
     {
         $email = $request->getParsedBody()['email'];
-        $pw = $request->getParsedBody()['pw'];
-
+        $pw =  $request->getParsedBody()['password'];
+        //var_dump($pw);exit;
         $loginData = array(
-                'email'=> $email,
-                'password'=>$pw
+                'email'=> $email
         );
         $result = $this->fmMethodsObj->getOne('USR',$loginData);
 
         if (empty ($result['records']) )
         { 
-            $res = array('status'=> "BAD REQUEST", 'code'=> 400,'description'=>"incorrect credentials");
-            return $response->withStatus(400)
-                            ->withHeader('Content-Type', 'application/json')
-                            ->write(json_encode($res));
+            $res = array('description'=>"incorrect credentials");
+            $http_status_code = 400;
         }
         else
         {
-            $_SESSION['id'] = $result['records'][0]->getField('id');
-            $_SESSION['role'] = $result['records'][0]->getField('role');
-
-            $res = array('status'=> "Ok", 'code'=> 200,'description'=>"login successful");
-
-            return $response->withStatus(200)
-                            ->withHeader('Content-Type', 'application/json')
-                            ->write(json_encode($res));
+            if(password_verify($pw,$result['records'][0]->getField('password')))
+            {
+                $_SESSION['id'] = $result['records'][0]->getField('id');
+                $_SESSION['role'] = $result['records'][0]->getField('role');
+            
+                $res = array('description'=>"login successful",'id'=>$_SESSION['id']);
+                $http_status_code = 200;
+            }
+            else
+            {
+                $res = array('description'=>"incorrect credentials");
+                $http_status_code = 400;
+            }
+          
         }
-
+        return $response->withJson($res)
+                        ->withStatus($http_status_code);
        
     }
 

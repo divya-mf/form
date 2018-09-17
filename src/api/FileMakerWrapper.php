@@ -36,6 +36,7 @@ class FileMakerWrapper{
 	{
         $findCommand = $this->fm->newFindCommand($layout);
         foreach ($loginData as $key => $val) {
+            
             $findCommand->addFindCriterion($key,"==$val");
         }
         $result = $findCommand->execute();
@@ -43,7 +44,10 @@ class FileMakerWrapper{
         {   
             $status['msg']=array('status'=> $result->getMessage(), 'code'=> $result->code);
             $status['records']=[]; 
-            $this->log->addInfo($result->code.'=> '.$result->getMessage());
+             if($result->code!= 401)
+            {
+                $this->log->addInfo($result->code.'=> '.$result->getMessage());
+            }
         }
         else
         {
@@ -90,7 +94,6 @@ class FileMakerWrapper{
     public function getSearchResult($layout,$allANDs,$allORs)
     {
         $findCommand = $this->fm->newCompoundFindCommand($layout);
-
         $i=1;
 
         foreach ($allORs as $key => $val) {
@@ -109,23 +112,34 @@ class FileMakerWrapper{
                     ${'findRequest' . $i}->addFindCriterion($field, "==$value");
                 }
             }
+            if(empty($val) && empty($value))
+            {
+                $status['flag']=0;
+            }
+            else
+            {
+                $findCommand->add($i, ${'findRequest' . $i});
+                $i++;
+            }
 
-            $findCommand->add($i, ${'findRequest' . $i});
-            $i++;
+            
+
         }
 
         $result = $findCommand->execute();
-
         if ($this->class::isError($result))
         {
             $status['msg']=array('status'=> $result->getMessage(), 'code'=> $result->code);
             $status['records']=[];
-            $this->log->addInfo($records->code.'=> '.$records->getMessage());
+
+            $this->log->addInfo($result->code.'=> '.$result->getMessage());
         }
-        else{
+        else
+        {
             $records = $result->getRecords(); 
             $status['records']=$records;
-            $status['msg']=$records->code.'=> '.$records->getMessage();
+
+        
             if ($this->class::isError($records))
             {
                 $status['msg']=array('status'=> $records->getMessage(), 'code'=> $records->code);
@@ -133,7 +147,6 @@ class FileMakerWrapper{
                 $this->log->addInfo($records->code.'=> '.$records->getMessage());
             }
         }
-
         return $status;
     }
     
@@ -148,21 +161,54 @@ class FileMakerWrapper{
      */
 	public function createRecord($layout, $data)
 	{
+        $scriptName="hashPasssword";
         $rec = $this->fm->createRecord($layout, $data);
         $result = $rec->commit();
-
+        
        if ($this->class::isError($result)) 
        {
-        $status=array('status'=> $result->getMessage(), 'code'=> $result->code);
-        $this->log->addInfo($result->code.'=> '.$result->getMessage());
-        return $status;
+            $status=array('status'=> $result->getMessage(), 'code'=> $result->code);
+            if($result->code!= 401)
+            {
+                $this->log->addInfo($result->code.'=> '.$result->getMessage());
+            }
+            return $status;
+       }
+         // Execute the script
+       $scriptObject = $this->fm->newPerformScriptCommand($layout, $scriptName);
+       $result = $scriptObject->execute();
+
+       return  $status=array('status'=> "Ok", 'code'=> 200, 'description'=> "Added successfully");
+    }
+
+   /**
+     * performScript
+     * executes scripts.
+     *
+     * @param string $layout The FileMaker layout name.
+     * @param string $scriptName The name of the script.
+     * @param string $scriptParameter The parameters to pass.
+     * returns {boolean value}
+     */
+    public function performScript($layout, $scriptName,$scriptParameter)
+    {
+       $scriptObject = $this->fm->newPerformScriptCommand($layout, $scriptName,$scriptParameter);
+       $result = $scriptObject->execute(); 
+       if ($this->class::isError($result)) 
+       {
+            $status=[];
+            if($result->code!= 401)
+            {
+                $this->log->addInfo($result->code.'=> '.$result->getMessage());
+            }
+            return $status;
        }
 
-       return  $status=array('status'=> "Ok", 'code'=> 200, 'description'=> "Activity added successfully");
-   }
+         return $status=array('status'=> "Ok", 'code'=> 200, 'description'=> "Successful");
+         
+    }
 
-   
-   
+
 }
 
 

@@ -4,7 +4,7 @@
 $container = $app->getContainer();
 
 // view renderer
-$container['renderer'] = function ($c) {
+$container['renderer'] = function ($container) {
     $settings = $c->get('settings')['renderer'];
     return new Slim\Views\PhpRenderer($settings['template_path']);
 };
@@ -12,8 +12,6 @@ $container['renderer'] = function ($c) {
 // monolog
 $container['logger'] = function ($container) {
     $settings = $container->get('settings')['logger'];
-    print_r($settings);
-    exit;
     $logger = new Monolog\Logger('slimprojecct');
     $logger->pushProcessor(new Monolog\Processor\UidProcessor());
     $logger->pushHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/../logs/app.log', '\Monolog\Logger::DEBUG'));
@@ -25,37 +23,44 @@ $container['Controller'] = function ($container)
 	return new \Src\Controllers\Controller($container);
 };
 
+//object of AuthController class
 $container['AuthController'] = function ($container)
 {
 	return new \Src\Controllers\AuthController($container);
 };
 
+//object of UserActivitiesController class
 $container['UserActivitiesController'] = function ($container)
-{
+{ 
 	return new \Src\Controllers\UserActivitiesController($container);
 };
 
+//object of UserActivitiesController class
 $container['FileMakerWrapper'] = function ($container)
 {
 	return new \Src\Api\FileMakerWrapper($container);
 };
 
+//object of UserActivitiesController class
 $container['Constants'] = function ($container)
 {
 	return new \Src\Api\Constants($container);
 };
 
+//object of UserActivitiesController class
 $container['notFoundHandler'] = function ($container)
 { 
 	$logger = $container->get('logger');
 	return function ($request, $response) use ($logger)
 	{ 
 		$res=$response->withStatus(404);
-		 $logger->addInfo($res);
-	 	die('404: PAGE NOT FOUND');
+		$logger->addInfo($res);
+	 	$msg='404: PAGE NOT FOUND';
+	 	return $msg;
 	};
 };
 
+//405 error handler
 $container['notAllowedHandler'] = function ($container)
 { 
 	$logger = $container->get('logger');
@@ -63,10 +68,12 @@ $container['notAllowedHandler'] = function ($container)
 	{
 		$res=$response->withStatus(405);
 		$logger->addInfo($res);
-		die('405: IMPROPER METHOD ASSIGNMENT');
+		$msg='405: IMPROPER METHOD ASSIGNMENT';
+		return $msg;
 	};
 };
 
+//500 error handler
 $container['phpErrorHandler'] = function ($container)
 { 
 	$logger = $container->get('logger');
@@ -74,10 +81,12 @@ $container['phpErrorHandler'] = function ($container)
 	{
 		$res=$response->withStatus(500);
 		$logger->addInfo($res);
-		die('500: Please try later');
+		$msg='500: Please try later';
+		return $msg;
 	};
 };
 
+//object of database connectivity
 $container['db'] = function ($container) {
     require_once (__DIR__ .'/api/FileMaker.php');
 

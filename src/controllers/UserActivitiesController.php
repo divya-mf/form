@@ -15,9 +15,8 @@ class UserActivitiesController extends Controller
 
     public function __construct($container){
         //include __DIR__ .'/../api/FileMakerWrapper.php';
-		$this->id= $_SESSION['id'];
-        $this->role=$_SESSION['role'];
-        $this->fmMethodsObj= $container->get('FileMakerWrapper');
+		$this->fmMethodsObj= $container->get('FileMakerWrapper');
+		
 	}
     
     /**
@@ -45,6 +44,32 @@ class UserActivitiesController extends Controller
         $userInfo['users']=$users;
         
         return $response->withStatus(200)
+                        ->withJson($userInfo);
+	}
+
+	/**
+	 * getUserDetails
+     * fetches the information of requested user.
+     *
+     * returns json object
+     */
+	public function getUserDetails($request, $response)
+	{
+		$userDetails = array(
+	                    'id' =>$request->getParsedBody()['id'],
+	                    );
+	    $result = $this->fmMethodsObj->getOne('USR', $userDetails); 
+        $records=$result['records'][0];
+	    $user=array();
+	    $user['id']=$records->getField('id');
+	    $user['first_name']=$records->getField('firstName');
+	    $user['last_name']=$records->getField('lastName');
+	    $user['email']=$records->getField('email');
+	    $user['role']=$records->getField('role');
+        $userInfo['msg']= $result['msg'];
+        $userInfo['user']=$user;
+        
+        return $response->withStatus(200)
                         ->withHeader('Content-Type', 'application/json')
                         ->write(json_encode($userInfo));
 	}
@@ -58,9 +83,9 @@ class UserActivitiesController extends Controller
      */
 	public function addActivity($request, $response)
 	{
-	    if($request->getParsedBody()['description']!='' && $request->getParsedBody()['user_id']!=''){
+	    if($request->getParsedBody()['description']!=''){
 
-			$date = date("m-d-Y", strtotime($request->getParsedBody()['dueDate']));
+			$date = date("m-d-Y", strtotime($request->getParsedBody()['date']));
 	        $activityDetails = array(
 	                    'description' =>$request->getParsedBody()['description'],
 	                    '__fk_user_id' =>$request->getParsedBody()['user_id'],
@@ -71,16 +96,14 @@ class UserActivitiesController extends Controller
 	        $result=$this->fmMethodsObj->createRecord('activities',$activityDetails);
 
 	        return $response->withStatus(200)
-                            ->withHeader('Content-Type', 'application/json')
-                            ->write(json_encode("Activity added successfully"));
+                            ->withJson("Activity added successfully");
 	    }
 	    else
 	        {   
 				$res = array('status'=> "BAD REQUEST", 'code'=> 400,'description'=>"Fill in all the fields");
 				
            		 return $response->withStatus(400)
-                            	 ->withHeader('Content-Type', 'application/json')
-                            	 ->write(json_encode($res));
+                            	 ->withJson($res);
             }
 	}
 
@@ -93,20 +116,27 @@ class UserActivitiesController extends Controller
      */
 	public function getAllActivities($request, $response)
 	{
+
 		$activities=array();
-		
-		if(isset($request->getParsedBody()['allANDs']) || isset($request->getParsedBody()['allORs'])){
-			$allANDs=$request->getParsedBody()['allANDs'];
-			$allORs=$request->getParsedBody()['allORs'];
+		$id=$request->getParsedBody()['dataToSend']['id'];
+		$role=$request->getParsedBody()['dataToSend']['role'];
+		$userDetails = array(
+	                    '__fk_user_id' =>$id,
+	                    );
+		if(isset($request->getParsedBody()['dataToSend']['allANDs']) || isset($request->getParsedBody()['dataToSend']['allORs'])){
+
+			$allANDs=$request->getParsedBody()['dataToSend']['allANDs'];
+			$allORs=$request->getParsedBody()['dataToSend']['allORs'];
 		}
-	    if($this->role=='admin')
+	    if($role == 'Admin')
 	    {
 	    	if(isset($allANDs) || isset($allORs))
 	    	{
-	          $records = $this->fmMethodsObj->getSearchResult('activities',$allANDs,$allORs);
+	           	$records = $this->fmMethodsObj->getSearchResult('activities',$allANDs,$allORs);
 	        }
 	        else
 	        {
+
 	        	$records = $this->fmMethodsObj->getAll('activities');
 	    	}
 	    }
@@ -114,22 +144,22 @@ class UserActivitiesController extends Controller
 	    {
 	    	if(isset($allANDs)|| isset($allORs))
 	    	{
-	          array_push($allANDs,['__fk_user_id'=>$this->id]);
-
+	    		
+	          $allANDs = array_merge($allANDs, $userDetails);
 	          $records = $this->fmMethodsObj->getSearchResult('activities',$allANDs,$allORs);
+	          	
 	        }
 	        else
 	        {
-	        	$records = $this->fmMethodsObj->getOne('activities','__fk_user_id',$this->id);
+	        	$records = $this->fmMethodsObj->getOne('activities',$userDetails);
 	        }
 	    }
 
 	    $i=0;
-        
 	    if(!empty($records['records']))
 	    {
-            $records=$records['records'];
-		    foreach ($records as $record) { 
+            $result=$records['records'];
+		    foreach ($result as $record) { 
 
 		        $activities[$i]['id']=$record->getField('id');
 		        $activities[$i]['description']=$record->getField('description');
@@ -142,10 +172,25 @@ class UserActivitiesController extends Controller
 		        $i++;
 			}
 
-            return $response->withStatus(200)
-                            ->withHeader('Content-Type', 'application/json')
-                            ->write(json_encode($activities));
+            $httpResponseCode=200;
+            $res=$activities;
         }
+        else
+        {
+        	if(isset($records['flag']) )
+        	{
+        		$httpResponseCode=200;
+            	$res=$records['flag'];
+        	}
+        	else
+        	{
+        		$httpResponseCode=400;
+        	    $res=$activities;
+        	}
+        }
+
+        return $response->withStatus($httpResponseCode)
+                        ->withJson($res);
         
 	}
 
